@@ -36,7 +36,6 @@ public class EventListener {
         if(!(isEnabled && isFeatureEnabled) || e.getType() != ChatType.CHAT) return;
         String sender = null;
         String msg = getUnformattedText(e.getMessage().getFormattedText());
-        System.out.println(msg);
         Matcher g = GLOBAL_CHAT_PATTERN.matcher(msg);
         Matcher p = PARTY_CHAT_PATTERN.matcher(msg);
         Matcher d = DIRECT_CHAT_PATTERN.matcher(msg);
@@ -47,10 +46,8 @@ public class EventListener {
         }else if(d.matches()){
             sender = d.group("username");
         }
-        System.out.println(sender);
         if(sender != null) {
             for (String nm : deadPlayers) {
-                System.out.println(nm);
                 if (sender.startsWith(nm)) {
                     e.setCanceled(true);
                 }
@@ -62,15 +59,13 @@ public class EventListener {
         if(e.phase == TickEvent.Phase.END){
             ScoreObjective so;
             if(mc.player!=null && mc.world != null && (so=mc.world.getScoreboard().getObjectiveInDisplaySlot(1))!=null){
-                System.out.println("scoreboard condition passed");
                 List<String> texts = new ArrayList<>();
                 AtomicBoolean inParty = new AtomicBoolean(false);
-                so.getScoreboard().getTeams().forEach((team) -> {
-                    String line = getUnformattedText(team.getPrefix() + team.getDisplayName() + team.getSuffix());
+                so.getScoreboard().getScores().forEach((sc) -> {
+                    String line = getUnformattedText(sc.getPlayerName());
                     texts.add(line);
                     if (line.contains("Party: [")){
                         inParty.set(true);
-                        System.out.println("inParty = true");
                     }
                 }
                 );
@@ -79,7 +74,6 @@ public class EventListener {
                 for(String s : texts){
                     if(s.contains("||0||")){
                         deadPlayers.add(getPlayerNameFromSidebarText(s));
-                        System.out.println(s);
                     }
                 }
             }
@@ -90,7 +84,6 @@ public class EventListener {
         char before = '1';
         boolean isName = false;
         StringBuilder ret = new StringBuilder();
-
         while (name.length()>++i){
             if(!isName){
                 isName = Character.isAlphabetic(name.charAt(i));
