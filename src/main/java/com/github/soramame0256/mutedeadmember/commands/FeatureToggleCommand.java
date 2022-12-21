@@ -10,8 +10,8 @@ import net.minecraft.util.text.TextComponentString;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.soramame0256.mutedeadmember.MuteDeadMember.MOD_PREFIX;
-import static com.github.soramame0256.mutedeadmember.MuteDeadMember.isFeatureEnabled;
+import static com.github.soramame0256.mutedeadmember.MuteDeadMember.*;
+import static com.github.soramame0256.mutedeadmember.MuteDeadMember.isEnabled;
 
 public class FeatureToggleCommand extends CommandBase {
 
@@ -42,6 +42,10 @@ public class FeatureToggleCommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        sender.sendMessage(new TextComponentString(MOD_PREFIX + " §bToggled to " + (isFeatureEnabled = !isFeatureEnabled)));
+        if(isEnabled) {
+            sender.sendMessage(new TextComponentString(MOD_PREFIX + " §bMod handler automatically disabled. it can be enabled by /mdmtoggle"));
+            isEnabled = false;
+        }
+        sender.sendMessage(new TextComponentString(MOD_PREFIX + " §bManually toggled to " + (isFeatureEnabled = !isFeatureEnabled)));
     }
 }

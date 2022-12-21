@@ -1,8 +1,10 @@
 package com.github.soramame0256.mutedeadmember.listener;
 
+import javafx.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,17 +25,20 @@ public class EventListener {
 
     private static final String PARTY_CHAT_REGEX = "\\[(?<username>[a-zA-Z0-9_]+)] .*";
     private static final String DIRECT_CHAT_REGEX = "\\[(?<username>[a-zA-Z0-9_]+) ➤ [a-zA-Z0-9_]+] .*";
+    private static final String SERVER_BRAND_REGEX = "(?<serverproxy>.+) <- (?<serverapplication>.+)";
     private final Pattern GLOBAL_CHAT_PATTERN;
     private final Pattern PARTY_CHAT_PATTERN;
     private final Pattern DIRECT_CHAT_PATTERN;
+    private final Pattern SERVER_BRAND_PATTERN;
     public EventListener(){
         GLOBAL_CHAT_PATTERN = Pattern.compile(GLOBAL_CHAT_REGEX);
         PARTY_CHAT_PATTERN = Pattern.compile(PARTY_CHAT_REGEX);
         DIRECT_CHAT_PATTERN = Pattern.compile(DIRECT_CHAT_REGEX);
+        SERVER_BRAND_PATTERN = Pattern.compile(SERVER_BRAND_REGEX);
     }
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent e){
-        if(!(isEnabled && isFeatureEnabled) || e.getType() != ChatType.CHAT) return;
+        if(!isFeatureEnabled || e.getType() != ChatType.CHAT) return;
         String sender = null;
         String msg = getUnformattedText(e.getMessage().getFormattedText());
         Matcher g = GLOBAL_CHAT_PATTERN.matcher(msg);
@@ -56,7 +61,7 @@ public class EventListener {
     }
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onTick(TickEvent.ClientTickEvent e){
-        if(e.phase == TickEvent.Phase.END){
+        if(e.phase == TickEvent.Phase.END && isFeatureEnabled){
             ScoreObjective so;
             if(mc.player!=null && mc.world != null && (so=mc.world.getScoreboard().getObjectiveInDisplaySlot(1))!=null){
                 List<String> texts = new ArrayList<>();
@@ -77,7 +82,19 @@ public class EventListener {
                     }
                 }
             }
+        }else if(isEnabled){
+            if(!isFeatureEnabled && getServerBrand().getValue().equalsIgnoreCase("wynn")){
+                mc.player.sendMessage(new TextComponentString(MOD_PREFIX + " §bFeature automatically enabled!"));
+                isFeatureEnabled = true;
+            }if(isFeatureEnabled && !getServerBrand().getValue().equalsIgnoreCase("wynn")){
+                System.out.println("Feature automatically disabled.");
+                isFeatureEnabled = false;
+            }
         }
+    }
+    private Pair<String, String> getServerBrand(){
+        Matcher m = SERVER_BRAND_PATTERN.matcher(mc.player.getServerBrand());
+        return m.find() ? new Pair<>(m.group("serverproxy"), m.group("serverapplication")) : new Pair<>("null","null");
     }
     private String getPlayerNameFromSidebarText(String name){
         int i =-1;

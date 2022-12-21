@@ -1,5 +1,6 @@
 package com.github.soramame0256.mutedeadmember;
 
+import com.github.soramame0256.mutedeadmember.commands.DebugCommand;
 import com.github.soramame0256.mutedeadmember.commands.FeatureToggleCommand;
 import com.github.soramame0256.mutedeadmember.commands.MasterToggleCommand;
 import com.github.soramame0256.mutedeadmember.listener.EventListener;
@@ -38,6 +39,7 @@ public class MuteDeadMember {
         MinecraftForge.EVENT_BUS.register(new EventListener());
         ClientCommandHandler.instance.registerCommand(new FeatureToggleCommand());
         ClientCommandHandler.instance.registerCommand(new MasterToggleCommand());
+        ClientCommandHandler.instance.registerCommand(new DebugCommand());
     }
 
     /**
