@@ -4,12 +4,18 @@ import com.github.soramame0256.mutedeadmember.commands.DebugCommand;
 import com.github.soramame0256.mutedeadmember.commands.FeatureToggleCommand;
 import com.github.soramame0256.mutedeadmember.commands.MasterToggleCommand;
 import com.github.soramame0256.mutedeadmember.listener.EventListener;
+import com.github.trcdeveloppers.TRCLib.util.JsonUtils;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Mod(
         modid = MuteDeadMember.MOD_ID,
@@ -27,8 +33,21 @@ public class MuteDeadMember {
      */
     @Mod.Instance(MOD_ID)
     public static MuteDeadMember INSTANCE;
-    public static boolean isEnabled = true;
+    public static boolean isEnabled = false;
     public static boolean isFeatureEnabled = false;
+    public static JsonUtils ju = null;
+    static{
+        try {
+            Path dir = Paths.get("mutedeadmember");
+            if(Files.notExists(dir)) {
+                Files.createDirectory(dir);
+            }
+            ju = new JsonUtils("mutedeadmember/settings.json");
+        } catch (IOException e) {
+            System.out.println("Failed to create instance of JsonUtils!");
+            System.out.println("Now, I can't save any operations for me.... this time.");
+        }
+    }
     /**
      * This is the first initialization event. Register tile entities here.
      * The registry events below will have fired prior to entry to this method.
@@ -40,6 +59,10 @@ public class MuteDeadMember {
         ClientCommandHandler.instance.registerCommand(new FeatureToggleCommand());
         ClientCommandHandler.instance.registerCommand(new MasterToggleCommand());
         ClientCommandHandler.instance.registerCommand(new DebugCommand());
+        if (ju != null) {
+            isEnabled = ju.getBooleanData("isMasterEnabled");
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> ju.saveBooleanData("isMasterEnabled", isEnabled)));
+        }
     }
 
     /**

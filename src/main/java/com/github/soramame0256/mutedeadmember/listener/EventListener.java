@@ -1,6 +1,5 @@
 package com.github.soramame0256.mutedeadmember.listener;
 
-import javafx.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.text.ChatType;
@@ -82,13 +81,16 @@ public class EventListener {
                     }
                 }
             }
-        }else if(isEnabled){
-            if(!isFeatureEnabled && getServerBrand().getValue().equalsIgnoreCase("wynn")){
-                mc.player.sendMessage(new TextComponentString(MOD_PREFIX + " §bFeature automatically enabled!"));
-                isFeatureEnabled = true;
-            }if(isFeatureEnabled && !getServerBrand().getValue().equalsIgnoreCase("wynn")){
-                System.out.println("Feature automatically disabled.");
-                isFeatureEnabled = false;
+        }else {
+            if(isEnabled && mc.player != null) {
+                if (!isFeatureEnabled && getServerBrand().getV().equalsIgnoreCase("wynn")) {
+                    mc.player.sendMessage(new TextComponentString(MOD_PREFIX + " §bFeature automatically enabled!"));
+                    isFeatureEnabled = true;
+                }
+                if (isFeatureEnabled && !getServerBrand().getV().equalsIgnoreCase("wynn")) {
+                    System.out.println("Feature automatically disabled.");
+                    isFeatureEnabled = false;
+                }
             }
         }
     }
@@ -114,5 +116,19 @@ public class EventListener {
             }
         }
         return ret.toString().trim();
+    }
+    public static class Pair<T,V> {
+        private T t;
+        private V v;
+        public Pair(T t, V v){
+            this.t = t;
+            this.v = v;
+        }
+        public T getT(){
+            return t;
+        }
+        public V getV(){
+            return v;
+        }
     }
 }
