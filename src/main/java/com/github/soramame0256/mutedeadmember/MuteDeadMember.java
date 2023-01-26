@@ -4,7 +4,7 @@ import com.github.soramame0256.mutedeadmember.commands.DebugCommand;
 import com.github.soramame0256.mutedeadmember.commands.FeatureToggleCommand;
 import com.github.soramame0256.mutedeadmember.commands.MasterToggleCommand;
 import com.github.soramame0256.mutedeadmember.listener.EventListener;
-import com.github.trcdeveloppers.TRCLib.util.JsonUtils;
+import com.github.soramame0256.mutedeadmember.util.JsonUtils;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;

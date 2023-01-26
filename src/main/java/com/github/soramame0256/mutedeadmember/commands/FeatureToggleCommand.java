@@ -1,6 +1,5 @@
 package com.github.soramame0256.mutedeadmember.commands;
 
-import com.github.soramame0256.mutedeadmember.MuteDeadMember;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.soramame0256.mutedeadmember.MuteDeadMember.*;
-import static com.github.soramame0256.mutedeadmember.MuteDeadMember.isEnabled;
 
 public class FeatureToggleCommand extends CommandBase {
 
